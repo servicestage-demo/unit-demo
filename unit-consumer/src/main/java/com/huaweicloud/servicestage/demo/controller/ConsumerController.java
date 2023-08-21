@@ -31,9 +31,6 @@ public class ConsumerController {
     @Value("${spring.cloud.servicecomb.discovery.datacenter.availableZone}")
     private String availableZone;
 
-    @Value("${instance-description.properties.tag.az}")
-    private String az;
-
     @Autowired
     private RestTemplate restTemplate;
 
@@ -48,7 +45,6 @@ public class ConsumerController {
         msg.put("datacenterName", datacenterName);
         msg.put("region", region);
         msg.put("availableZone", availableZone);
-        msg.put("az", az);
         Map<String, Object> map = new HashMap<>(restTemplate.getForObject(PROVIDER_URL, Map.class));
         map.put(name, msg);
         return map;

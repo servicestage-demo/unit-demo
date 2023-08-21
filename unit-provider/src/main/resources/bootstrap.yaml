@@ -18,14 +18,13 @@ spring:
         denyCrossZoneLoadBalancing: true
         datacenter:
           name: ou1
-          region: chengdu
-          availableZone: az1.ou1
+          region: chengdu.ou1
+          availableZone: az1.du1
+      instance:
+        properties:
+          ou: ou1
+          du: du1
       config:
         # 配置中心地址，本示例使用ServiceStage环境变量。建议保留这种配置方式，部署的时候，不用手工修改地址。
         serverAddr: ${PAAS_CSE_CC_ENDPOINT:http://127.0.0.1:30110}
         serverType: kie
-
-instance-description:
-  properties:
-    tag:
-      az: ${spring.cloud.servicecomb.discovery.datacenter.region}-${spring.cloud.servicecomb.discovery.datacenter.availableZone}
