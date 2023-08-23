@@ -22,8 +22,8 @@ spring:
           availableZone: az1.du1
       instance:
         properties:
-          ou: ou1
-          du: du1
+          "[cse.io/ou]": ou1
+          "[cse.io/du]": du1
       config:
         # 配置中心地址，本示例使用ServiceStage环境变量。建议保留这种配置方式，部署的时候，不用手工修改地址。
         serverAddr: ${PAAS_CSE_CC_ENDPOINT:http://127.0.0.1:30110}
