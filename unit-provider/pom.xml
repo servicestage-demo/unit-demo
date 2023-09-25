@@ -6,6 +6,7 @@
         <artifactId>unit-demo</artifactId>
         <groupId>com.huaweicloud.servicestage.demo</groupId>
         <version>1.0.0</version>
+        <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,6 +26,10 @@
         <dependency>
             <groupId>com.huaweicloud</groupId>
             <artifactId>spring-cloud-starter-huawei-service-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.huaweicloud</groupId>
+            <artifactId>spring-cloud-starter-huawei-nacos</artifactId>
         </dependency>
     </dependencies>
 

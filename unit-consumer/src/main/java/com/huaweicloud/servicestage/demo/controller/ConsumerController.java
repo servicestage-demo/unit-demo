@@ -22,14 +22,11 @@ public class ConsumerController {
     @Value("${spring.application.name}")
     private String name;
 
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.name}")
-    private String datacenterName;
+    @Value("${SERVICECOMB_INSTANCE_PROPS:}")
+    private String props;
 
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.region}")
-    private String region;
-
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.availableZone}")
-    private String availableZone;
+    @Value("${spring.cloud.servicecomb.discovery.version}")
+    private String version;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -42,9 +39,8 @@ public class ConsumerController {
     @GetMapping("unit-consumer/hello")
     public Map<String, Object> hello() {
         Map<String, String> msg = new HashMap<>();
-        msg.put("datacenterName", datacenterName);
-        msg.put("region", region);
-        msg.put("availableZone", availableZone);
+        msg.put("SERVICECOMB_INSTANCE_PROPS", props);
+        msg.put("version", version);
         Map<String, Object> map = new HashMap<>(restTemplate.getForObject(PROVIDER_URL, Map.class));
         map.put(name, msg);
         return map;

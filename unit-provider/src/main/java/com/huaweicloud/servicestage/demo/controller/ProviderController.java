@@ -18,14 +18,11 @@ public class ProviderController {
     @Value("${spring.application.name}")
     private String name;
 
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.name}")
-    private String datacenterName;
+    @Value("${spring.cloud.servicecomb.discovery.version}")
+    private String version;
 
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.region}")
-    private String region;
-
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.availableZone}")
-    private String availableZone;
+    @Value("${SERVICECOMB_INSTANCE_PROPS:}")
+    private String props;
 
     /**
      * 测试方法
@@ -35,9 +32,8 @@ public class ProviderController {
     @GetMapping("unit-provider/hello")
     public Map<String, Object> hello() {
         Map<String, String> msg = new HashMap<>();
-        msg.put("datacenterName", datacenterName);
-        msg.put("region", region);
-        msg.put("availableZone", availableZone);
+        msg.put("SERVICECOMB_INSTANCE_PROPS", props);
+        msg.put("version", version);
         Map<String, Object> map = new HashMap<>();
         map.put(name, msg);
         return map;
