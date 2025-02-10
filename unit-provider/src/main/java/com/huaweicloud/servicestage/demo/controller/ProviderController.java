@@ -41,7 +41,7 @@ public class ProviderController {
      * @return msg
      * @throws Exception ex
      */
-    @GetMapping("unit-provider/hello")
+    @GetMapping("gateway-provider/hello")
     public Map<String, Object> hello() throws Exception {
         if (ex) {
             throw new Exception("exception");
@@ -58,7 +58,7 @@ public class ProviderController {
      *
      * @param enabled enabled
      */
-    @GetMapping("unit-provider/ex")
+    @GetMapping("gateway-provider/ex")
     public void ex(@RequestParam("enabled") boolean enabled) {
         ex = enabled;
     }

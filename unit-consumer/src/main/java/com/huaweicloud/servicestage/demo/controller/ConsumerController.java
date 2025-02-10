@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 /**
@@ -18,10 +20,10 @@ import javax.annotation.PostConstruct;
 public class ConsumerController {
     private static String PROVIDER_URL;
 
-    @Value("${request.ip:127.0.0.1:8092}")
-    private String ip;
+    @Value("${gateway.service.name:gateway-service}")
+    private String serviceName;
 
-    @Value("${request.path:/unit-provider/hello}")
+    @Value("${request.path:/gateway-provider/hello}")
     private String path;
 
     @Autowired
@@ -29,7 +31,7 @@ public class ConsumerController {
 
     @PostConstruct
     public void init() {
-        PROVIDER_URL = "http://" + ip + path;
+        PROVIDER_URL = "http://" + serviceName + path;
     }
 
     /**
@@ -37,8 +39,8 @@ public class ConsumerController {
      *
      * @return msg
      */
-    @GetMapping("unit-consumer/hello")
-    public String hello() {
-        return restTemplate.getForObject(PROVIDER_URL, String.class);
+    @GetMapping("gateway-consumer/hello")
+    public Map<String, Object> hello() {
+        return restTemplate.getForObject(PROVIDER_URL, Map.class);
     }
 }
