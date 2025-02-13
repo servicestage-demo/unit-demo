@@ -3,7 +3,7 @@
 ## 模块介绍
 
 - [grpc-controller](./grpc-controller)为报文转换服务，使用grpc协议进行开发。
-- [ex-processor-provider](./unit-provider)为常见的spring-cloud服务，使用http协议进行开发，这里将作为网关的后端服务。
+- [ex-processor-provider](./ex-processor-provider)为常见的spring-cloud服务，使用http协议进行开发，这里将作为网关的后端服务。
 
 ## 注意
 
