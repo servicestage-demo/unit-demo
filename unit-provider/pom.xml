@@ -29,7 +29,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>cookie-provider</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

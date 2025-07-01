@@ -16,7 +16,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>unit-consumer</module>
         <module>unit-provider</module>
     </modules>
 

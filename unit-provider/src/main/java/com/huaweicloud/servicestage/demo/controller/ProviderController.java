@@ -1,12 +1,18 @@
 package com.huaweicloud.servicestage.demo.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * controller
@@ -16,45 +22,38 @@ import java.util.Map;
  */
 @RestController
 public class ProviderController {
-    @Value("${spring.application.name}")
-    private String name;
-
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.name}")
-    private String datacenterName;
-
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.region}")
-    private String region;
-
-    @Value("${spring.cloud.servicecomb.discovery.datacenter.availableZone}")
-    private String availableZone;
-
-    private boolean ex;
-
     /**
      * 测试方法
      *
+     * @param request request
+     * @param response response
      * @return msg
-     * @throws Exception ex
      */
-    @GetMapping("unit-provider/hello")
-    public Map<String, Object> hello() throws Exception {
-        if (ex) {
-            throw new Exception("exception");
+    @GetMapping("/hello")
+    public Map<String, Object> hello(HttpServletRequest request, HttpServletResponse response) {
+        Enumeration<String> headerNames = request.getHeaderNames();
+        Map<String, List<Object>> headers = new HashMap<>();
+        while (headerNames.hasMoreElements()) {
+            String key = headerNames.nextElement();
+            if ("cookie".equalsIgnoreCase(key)) {
+                continue;
+            }
+            Enumeration<String> values = request.getHeaders(key);
+            List<Object> list = new ArrayList<>();
+            while (values.hasMoreElements()) {
+                String value = values.nextElement();
+                list.add(value);
+                if (key.toLowerCase(Locale.ROOT).startsWith("cookie")) {
+                    Cookie cookie = new Cookie(key, value);
+                    cookie.setPath(request.getRequestURI());
+                    response.addCookie(cookie);
+                }
+            }
+            headers.put(key, list);
         }
-        Map<String, String> msg = new HashMap<>();
-        msg.put("datacenterName", datacenterName);
-        msg.put("region", region);
-        msg.put("availableZone", availableZone);
         Map<String, Object> map = new HashMap<>();
-        map.put(name, msg);
+        map.put("cookies", request.getCookies());
+        map.put("headers", headers);
         return map;
-    }
-
-    /**
-     * 测试方法
-     */
-    @GetMapping("unit-provider/ex")
-    public void ex(@RequestParam("enabled") boolean enabled) {
-        ex = enabled;
     }
 }
