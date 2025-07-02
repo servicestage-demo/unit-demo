@@ -1,6 +1,8 @@
 package com.huaweicloud.servicestage.demo.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -55,5 +57,9 @@ public class ProviderController {
         map.put("cookies", request.getCookies());
         map.put("headers", headers);
         return map;
+    }
+
+    @RequestMapping(value = "/hello", method = RequestMethod.OPTIONS)
+    public void hello() {
     }
 }
