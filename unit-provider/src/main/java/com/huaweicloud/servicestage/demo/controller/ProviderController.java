@@ -1,20 +1,18 @@
 package com.huaweicloud.servicestage.demo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * controller
@@ -24,42 +22,38 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 public class ProviderController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProviderController.class);
+
     /**
      * 测试方法
      *
-     * @param request request
-     * @param response response
+     * @param certHeader certHeader
      * @return msg
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
-    @GetMapping("/hello")
-    public Map<String, Object> hello(HttpServletRequest request, HttpServletResponse response) {
-        Enumeration<String> headerNames = request.getHeaderNames();
-        Map<String, List<Object>> headers = new HashMap<>();
-        while (headerNames.hasMoreElements()) {
-            String key = headerNames.nextElement();
-            if ("cookie".equalsIgnoreCase(key)) {
-                continue;
+    @GetMapping("/tls-provider/hello")
+    public Map<String, Object> hello(@RequestHeader("x-forwarded-client-cert") String certHeader)
+            throws UnsupportedEncodingException {
+        Map<String, List<String>> msg = new HashMap<>();
+        String[] arr = certHeader.split(";");
+        for (String str : arr) {
+            String[] kv = str.split("=", 2);
+            String key = kv[0];
+            String value = kv[1];
+            if ("Cert".equals(key)) {
+                value = URLDecoder.decode(value, StandardCharsets.UTF_8.name());
             }
-            Enumeration<String> values = request.getHeaders(key);
-            List<Object> list = new ArrayList<>();
-            while (values.hasMoreElements()) {
-                String value = values.nextElement();
-                list.add(value);
-                if (key.toLowerCase(Locale.ROOT).startsWith("cookie")) {
-                    Cookie cookie = new Cookie(key, value);
-                    cookie.setPath(request.getRequestURI());
-                    response.addCookie(cookie);
-                }
+            if (("Cert".equals(key) || "Subject".equals(key)) && value.length() > 2) {
+                value = value.substring(1, value.length() - 1);
             }
-            headers.put(key, list);
+            msg.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("cookies", request.getCookies());
-        map.put("headers", headers);
-        return map;
-    }
+        String cert = msg.get("Cert").get(0);
+        // check client cert if you need
+        LOGGER.info("cert is {}.", cert);
 
-    @RequestMapping(value = "/hello", method = RequestMethod.OPTIONS)
-    public void hello() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("cert", msg);
+        return map;
     }
 }
